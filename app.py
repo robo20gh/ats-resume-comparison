@@ -99,7 +99,11 @@ else:
 
 # Add an expander to allow the user to view and potentially edit the prompt template
 with st.expander("If interested, click to see and customize the exact AI prompt"):
-    customized_prompt = st.text_area("The following is the actual prompt that will be sent to Gemini.  Feel free to customize it, but remember that the default prompt is probably pretty good:", value = prompt)
+    customized_prompt = st.text_area(
+        "The following is the actual prompt that will be sent to Gemini.  Feel free to customize it, but remember that the default prompt is probably pretty good:", 
+        value = prompt,
+        height = 300
+    )
 
 # Add a text area for the user to paste the job description into
 job_desc_text = st.text_area("Paste the {type} here:".format(type = role_description))
