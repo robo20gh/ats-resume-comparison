@@ -88,7 +88,7 @@ role_description = ""
 show_coverletter = False
 prompt = ""
 
-if application_type is "Chief Technology Officer":
+if application_type == "Chief Technology Officer":
     role_description = "job description"
     show_coverletter = True
     prompt = cto_input_prompt
@@ -113,7 +113,7 @@ col1, col2 = st.columns(2)
 with col1:
     uploaded_file = st.file_uploader("Upload your resume:", type="pdf", help="Please upload your resume in PDF format.")
 
-if show_coverletter is True:
+if show_coverletter == True:
     with col2:
         uploaded_cover_letter = st.file_uploader("Upload a cover letter that we can customize:", type="pdf", help="Please upload your template cover letter in PDF format.")
 
@@ -123,7 +123,7 @@ submit = st.button("Analyze the Resume")
 # When the submit button is clicked, send the prompt to Gemini.
 if submit:
     # Make sure that the required inputs have been provided, otherwise show an error
-    if job_desc_text is not None and (show_coverletter is False or uploaded_cover_letter is not None) and uploaded_file is not None:
+    if job_desc_text is not None and (show_coverletter == False or uploaded_cover_letter is not None) and uploaded_file is not None:
         # Add a spinner so that the user knows that the page is working and not hung up.
         with st.spinner("Your resume is being compared to the {type}.  This may take 30 seconds or longer depending on the size of the resume you submitted.".format(type = role_description)):
             # Get the resume text out of the PDF
@@ -131,7 +131,7 @@ if submit:
             
             # Get the cover letter text out of the PDF, but only if the cover letter upload control was present
             cover_letter_example = ""
-            if show_coverletter is True:
+            if show_coverletter == True:
                 cover_letter_example = input_pdf_text(uploaded_cover_letter)
             
             # Build the final prompt
