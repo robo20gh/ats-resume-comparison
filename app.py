@@ -43,9 +43,9 @@ cto_input_prompt = """As a skilled ATS equipped with a profound understanding of
 
 Remember to adopt a tone that reflects both professionalism and relatability throughout your response. Your expertise in technology leadership should inform your evaluations and suggestions, ensuring they are aligned with current industry standards.
 
-text={text}
+resume={resume}
 
-jd={jd}
+role_description={role_description}
 
 cover_letter={cover_letter}"""
 
@@ -61,9 +61,9 @@ chemistry_input_prompt = """Your task is to simulate a skilled Application Track
 
 5. **ATS Readability Assessment:** Evaluate the resume's structure and format to determine how effectively it would be parsed by an automated ATS. Provide insights into any formatting issues, layout concerns, or content organization that could hinder visibility in applicant tracking systems, along with tips for optimizing the resume for better recognition.
 
-text={text}
+resume={resume}
 
-jd={jd}"""
+role_description={role_description}"""
 
 
 # some initial page config to set a title and increase the width
@@ -100,7 +100,7 @@ else:
 with st.expander("If interested, click to see and customize the exact AI prompt"):
     customized_prompt = st.text_area("The following is the actual prompt that will be sent to Gemini.  Feel free to customize it, but remember that the default prompt is probably pretty good:", value = prompt)
 
-job_desc = st.text_area("Paste the {type} here:".format(type = role_description))
+job_desc_text = st.text_area("Paste the {type} here:".format(type = role_description))
 
 # put the inputs for file uploading in two columns
 col1, col2 = st.columns(2)
@@ -115,16 +115,16 @@ submit = st.button("Analyze the Resume")
 
 # as long as a resume has been uploaded, 
 if submit:
-    if job_desc is not None and (show_coverletter is False or uploaded_cover_letter is not None) and uploaded_file is not None:
+    if job_desc_text is not None and (show_coverletter is False or uploaded_cover_letter is not None) and uploaded_file is not None:
         with st.spinner("Analyzing the resume, please wait a moment..."):
-            resume = input_pdf_text(uploaded_file)
+            resume_text = input_pdf_text(uploaded_file)
 
             # format the prompt
             if application_type is "Chief Technology Officer":
                 cover_letter_example = input_pdf_text(uploaded_cover_letter)
-                input = customized_prompt.format(text=resume, jd=job_desc, cover_letter=cover_letter_example)
+                input = customized_prompt.format(resume=resume_text, role_description=job_desc_text, cover_letter=cover_letter_example)
             elif application_type is "Chemistry Internship":
-                input = customized_prompt.format(text=resume, jd=job_desc)
+                input = customized_prompt.format(resume=resume_text, role_description=job_desc_text)
                 
             response = get_gemini_response(input)
             st.subheader(response)
