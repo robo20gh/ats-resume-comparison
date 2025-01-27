@@ -72,7 +72,7 @@ st.set_page_config(page_title="Resume/Job Description Comparison Tool", layout="
 # streamlit
 st.title("Resume/Job Description Comparison Tool")
 st.caption("Improve your ATS resume score match while creating a cover letter to consider using.")
-st.caption("Important Note:x this application is experimental.  The creator and contributors accept no liability for the accuracy of the app or its behavior.  This application is provided &quot;as-is&quot; without any guarantees or warranties. The programmer is not responsible for any damage, loss of data, or any other negative consequences that may arise from using this software. Use at your own risk.  No data is stored or retained by the creator of the app.  Please refer to Gemini's privacy policy for detailed information about data retention.")
+st.caption("Important Note: this application is experimental.  The creator and contributors accept no liability for the accuracy of the app or its behavior.  This application is provided &quot;as-is&quot; without any guarantees or warranties. The programmer is not responsible for any damage, loss of data, or any other negative consequences that may arise from using this software. Use at your own risk.  No data is stored or retained by the creator of the app.  Please refer to Gemini's privacy policy for detailed information about data retention.")
 
 # form inputs for the job description, the resume uploader, the cover letter uploader, and the submit button
 st.header("Inputs")
