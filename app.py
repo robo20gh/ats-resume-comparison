@@ -118,14 +118,14 @@ if submit:
     if job_desc_text is not None and (show_coverletter is False or uploaded_cover_letter is not None) and uploaded_file is not None:
         with st.spinner("Analyzing the resume, please wait a moment..."):
             resume_text = input_pdf_text(uploaded_file)
-
+            
             # format the prompt
+            cover_letter_example = ""
             if application_type is "Chief Technology Officer":
                 cover_letter_example = input_pdf_text(uploaded_cover_letter)
-                input = customized_prompt.format(resume=resume_text, role_description=job_desc_text, cover_letter=cover_letter_example)
-            elif application_type is "Chemistry Internship":
-                input = customized_prompt.format(resume=resume_text, role_description=job_desc_text)
-                
+            
+            input = customized_prompt.format(resume=resume_text, role_description=job_desc_text, cover_letter=cover_letter_example)
+            
             response = get_gemini_response(input)
             st.subheader(response)
     else:
