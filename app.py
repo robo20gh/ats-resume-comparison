@@ -27,8 +27,7 @@ def input_pdf_text(file):
 
 
 # create an input prompt to pass to Gemini
-input_prompt = """
-As a skilled ATS equipped with a profound understanding of technology leadership, your task is to rigorously evaluate a given resume against a specific job description (JD). Please provide the following outputs in a concise and structured format:
+cto_input_prompt = """As a skilled ATS equipped with a profound understanding of technology leadership, your task is to rigorously evaluate a given resume against a specific job description (JD). Please provide the following outputs in a concise and structured format:
 
 1. **Match Percentage**: Calculate and present the percentage indicating how well the resume aligns with the JD based on key skills, qualifications, and relevant experience.
 
@@ -48,9 +47,23 @@ text={text}
 
 jd={jd}
 
-cover_letter={cover_letter}
+cover_letter={cover_letter}"""
 
-"""
+chemistry_input_prompt = """Your task is to simulate a skilled Application Tracking System (ATS) that specializes in evaluating resumes for physical sciences internships. Please analyze the provided resume in relation to the attached internship description and deliver the following insights:
+
+1. **Match Evaluation:** Calculate and report the overall match percentage between the resume and the internship description, explaining the criteria used in your assessment.
+
+2. **Strengths Summary:** Identify and summarize the key strengths of the resume as they align with the specific requirements and qualifications outlined in the internship description. Highlight any relevant academic achievements, technical skills, projects, or experiences.
+
+3. **Keyword Analysis:** Generate a list of critical keywords and phrases from the internship description that are absent from the resume. Focus on technical terminology, skills, and competencies that are essential for the role.
+
+4. **Actionable Improvements:** Recommend at least five actionable strategies to enhance the resume's alignment with the internship. These should focus on incorporating relevant experiences, emphasizing appropriate skills, and using targeted language that resonates with the internship's requirements.
+
+5. **ATS Readability Assessment:** Evaluate the resume's structure and format to determine how effectively it would be parsed by an automated ATS. Provide insights into any formatting issues, layout concerns, or content organization that could hinder visibility in applicant tracking systems, along with tips for optimizing the resume for better recognition.
+
+text={text}
+
+jd={jd}"""
 
 
 # some initial page config to set a title and increase the width
@@ -59,28 +72,60 @@ st.set_page_config(page_title="Resume/Job Description Comparison Tool", layout="
 # streamlit
 st.title("Resume/Job Description Comparison Tool")
 st.caption("Improve your ATS resume score match while creating a cover letter to consider using.")
-st.caption("Important Note: this application is experimental.  The creator and contributors accept no liability for the accuracy of the app or its behavior.  This application is provided &quot;as-is&quot; without any guarantees or warranties. The programmer is not responsible for any damage, loss of data, or any other negative consequences that may arise from using this software. Use at your own risk.  No data is stored or retained by the creator of the app.  Please refer to Gemini's privacy policy for detailed information about data retention.")
+st.caption("Important Note:x this application is experimental.  The creator and contributors accept no liability for the accuracy of the app or its behavior.  This application is provided &quot;as-is&quot; without any guarantees or warranties. The programmer is not responsible for any damage, loss of data, or any other negative consequences that may arise from using this software. Use at your own risk.  No data is stored or retained by the creator of the app.  Please refer to Gemini's privacy policy for detailed information about data retention.")
 
 # form inputs for the job description, the resume uploader, the cover letter uploader, and the submit button
 st.header("Inputs")
-job_desc = st.text_area("Paste the job description here:")
+
+# create the radio buttons that will allow the user to select the type of role they are applying for
+application_type = st.selectbox(
+    "What kind of role are you applying for?", 
+    ("Chief Technology Officer", "Chemistry Internship")
+)
+
+# based on the role, set up strings and bools
+role_description = ""
+show_coverletter = False
+prompt = ""
+
+if application_type is "Chief Technology Officer":
+    role_description = "job description"
+    show_coverletter = True
+    prompt = cto_input_prompt
+else:
+    role_description = "internship description"
+    show_coverletter = False
+    prompt = chemistry_input_prompt
+
+with st.expander("If interested, click to see and customize the exact AI prompt"):
+    customized_prompt = st.text_area("The following is the actual prompt that will be sent to Gemini.  Feel free to customize it, but remember that the default prompt is probably pretty good:", value = prompt)
+
+job_desc = st.text_area("Paste the {type} here:".format(type = role_description))
 
 # put the inputs for file uploading in two columns
 col1, col2 = st.columns(2)
 with col1:
     uploaded_file = st.file_uploader("Upload your resume:", type="pdf", help="Please upload your resume in PDF format.")
-with col2:
-    uploaded_cover_letter = st.file_uploader("Upload a cover letter that we can customize:", type="pdf", help="Please upload your template cover letter in PDF format.")
+
+if show_coverletter is True:
+    with col2:
+        uploaded_cover_letter = st.file_uploader("Upload a cover letter that we can customize:", type="pdf", help="Please upload your template cover letter in PDF format.")
 
 submit = st.button("Analyze the Resume")
 
 # as long as a resume has been uploaded, 
 if submit:
-    if job_desc is not None and uploaded_cover_letter is not None and uploaded_file is not None:
+    if job_desc is not None and (show_coverletter is False or uploaded_cover_letter is not None) and uploaded_file is not None:
         with st.spinner("Analyzing the resume, please wait a moment..."):
             resume = input_pdf_text(uploaded_file)
-            cover_letter_example = input_pdf_text(uploaded_cover_letter)
-            input = input_prompt.format(text=resume, jd=job_desc, cover_letter=cover_letter_example)
+
+            # format the prompt
+            if application_type is "Chief Technology Officer":
+                cover_letter_example = input_pdf_text(uploaded_cover_letter)
+                input = customized_prompt.format(text=resume, jd=job_desc, cover_letter=cover_letter_example)
+            elif application_type is "Chemistry Internship":
+                input = customized_prompt.format(text=resume, jd=job_desc)
+                
             response = get_gemini_response(input)
             st.subheader(response)
     else:
