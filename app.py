@@ -80,7 +80,7 @@ st.header("Inputs")
 # The main point here is to control which prompt is used in the query to Gemini.
 application_type = st.selectbox(
     "What kind of role are you applying for?", 
-    ("Chief Technology Officer", "Chemistry Internship")
+    ("Senior Technology Management (e.g. CTO, SVP of Engineering)", "Chemistry Internship")
 )
 
 # Based on the selected role, set some variables that will control page labels and whether or not a cover letter should be required.
@@ -88,7 +88,7 @@ role_description = ""
 show_coverletter = False
 prompt = ""
 
-if application_type == "Chief Technology Officer":
+if application_type == "Senior Technology Management (e.g. CTO, SVP of Engineering)":
     role_description = "job description"
     show_coverletter = True
     prompt = cto_input_prompt
