@@ -1,0 +1,4 @@
+To run the app locally, execute the following on the command line:
+streamlit run app.py
+
+To push the app to the production site, simply commit and push changes.  Streamlit will see the new commit and will redeploy the app automatically.
