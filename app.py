@@ -63,6 +63,29 @@ chemistry_input_prompt = """Your task is to simulate a skilled Application Track
 resume={resume}
 
 role_description={role_description}"""
+tour_guide_input_prompt = """Your task is to evaluate the resume for the position of a college campus tour guide, which requires a mix of enthusiasm, knowledge, and interpersonal skills to engage prospective students and their parents. The ideal candidate should foster excitement about attending the college while also reassuring parents about the value of tuition. Consider the following specific characteristics:
+
+- Strong connections across campus
+- In-depth knowledge of the school’s programs, history, and culture
+- Energetic and enthusiastic demeanor
+
+Please provide the following outputs based on the job description:
+
+1. **Resume Match Percentage:** Calculate how well the resume aligns with the job description, providing a percentage score.
+
+2. **Strengths Summary:** Outline the strengths presented in the resume that meet or exceed the job description requirements, specifically highlighting experiences, skills, and attributes pertinent to the role.
+
+3. **Missing Keywords:** Identify key terms and phrases from the job description that are absent in the resume, which are essential for highlighting relevant experience and skills.
+
+4. **Actionable Improvements:** Suggest specific revisions or additions to the resume that will enhance its alignment with the job description, thereby increasing the match percentage.
+
+5. **ATS Readability Assessment:** Evaluate how effectively an automated ATS would process the resume, considering factors like formatting, keyword optimization, and overall clarity, to maximize the applicant's chances of being noticed by recruiters.
+
+Consideration of these aspects will lead to a more thorough and precise resume evaluation tailored to the unique requirements of the tour guide role.
+
+resume={resume}
+
+role_description={role_description}"""
 
 
 # Some initial page config to set a title and increase the width
@@ -80,7 +103,7 @@ st.header("Inputs")
 # The main point here is to control which prompt is used in the query to Gemini.
 application_type = st.selectbox(
     "What kind of role are you applying for?", 
-    ("Senior Technology Management (e.g. CTO, SVP of Engineering)", "Chemistry Internship")
+    ("Senior Technology Management (e.g. CTO, SVP of Engineering)", "Chemistry Internship", "College campus tour guide")
 )
 
 # Based on the selected role, set some variables that will control page labels and whether or not a cover letter should be required.
@@ -92,10 +115,15 @@ if application_type == "Senior Technology Management (e.g. CTO, SVP of Engineeri
     role_description = "job description"
     show_coverletter = True
     prompt = cto_input_prompt
+elif application_type == "College campus tour guide":
+    role_description = "tour guide role description"
+    show_coverletter = False
+    prompt = tour_guide_input_prompt
 else:
-    role_description = "internship description"
+    role_description = "internship role description"
     show_coverletter = False
     prompt = chemistry_input_prompt
+    
 
 # Add an expander to allow the user to view and potentially edit the prompt template
 with st.expander("If interested, click to see and customize the exact AI prompt"):
